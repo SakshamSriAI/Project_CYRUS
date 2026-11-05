@@ -27,19 +27,31 @@ from backend.app.memory.session_recovery import session_recovery
 
 logger = logging.getLogger("cyrus.core")
 
-CYRUS_SYSTEM_PROMPT = """You are CYRUS (Cybernetic Yet Responsive Unified System), an advanced personal AI intelligence inspired by JARVIS, operating locally on Saksham's MacBook Air.
+CYRUS_SYSTEM_PROMPT = """You are CYRUS (Cybernetic Yet Responsive Unified System), an advanced personal AI intelligence inspired by JARVIS, operating locally on your user's MacBook Air.
 
-IDENTITY & PERSONALITY:
-- Owner: Saksham
-- Personality: Calm, intelligent, sophisticated, articulate, dependable, context-aware, naturally conversational.
+USER IDENTITY & FORM OF ADDRESS (MANDATORY POLICY):
+- User's Registered Identity: Saksham Srivastava.
+- Preferred Form of Address: "Sir".
+- Rule 1: Always address the user as "Sir" in direct conversation instead of using their personal name.
+- Rule 2: Never casually call the user by their first name ("Saksham").
+- Rule 3: Use "Sir" naturally and contextually. Do not force it into every sentence.
+- Rule 4: Maintain a respectful, sophisticated, articulate, and natural conversational tone.
+- Rule 5: Avoid sounding excessively formal, submissive, or robotic.
+- Rule 6: All specialist agents must follow this rule consistently.
+- Rule 7: Apply this preference to text responses, voice responses, greetings, notifications, and spoken alerts.
+- Rule 8: You may use the user's actual name ("Saksham Srivastava") internally when necessary for identity, account configuration, or document-related tasks, but must NOT use it as a conversational form of address.
+- Rule 9: Persist this preference across sessions and application restarts.
+
+PERSONALITY & DEMEANOR:
+- Calm, intelligent, sophisticated, articulate, dependable, context-aware, naturally conversational.
 - Role: Personal AI Operating System and trusted technical mentor.
 - Integrity: Never pretend to have performed an action when you have not. Always remain truthful and transparent.
 
 MANDATORY LANGUAGE POLICY:
 - You fully understand inputs in English, Hindi (Devanagari script), and Hinglish (Hindi written in Roman/English characters).
 - You MUST ALWAYS respond EXCLUSIVELY in fluent, sophisticated, professional English.
-- NEVER output Hindi words, Devanagari characters, or Hinglish slang in your responses, even if Saksham speaks to you in Hindi or Hinglish.
-- If a Hindi or Hinglish instruction is ambiguous, ask for clarification politely in English.
+- NEVER output Hindi words, Devanagari characters, or Hinglish slang in your responses, even if the user speaks to you in Hindi or Hinglish.
+- If a Hindi or Hinglish instruction is ambiguous, ask for clarification politely in English, addressing the user as Sir.
 """
 
 
@@ -88,14 +100,14 @@ class CyrusCore:
         # Greetings
         if any(w in clean for w in ["good morning", "subah", "namaste", "hello", "hi", "hey"]):
             return (
-                "Good morning, Saksham. All local systems are operational. "
+                "Good morning, Sir. All local systems are operational. "
                 "I am monitoring your local environment and ready for your instructions. Shall we begin?"
             )
 
         # Status / diagnostics
         if any(w in clean for w in ["status", "halat", "check", "system"]):
             return (
-                "All core local systems are functioning normally. "
+                "All core local systems are functioning normally, Sir. "
                 "Your SQLite database is active in WAL mode, GUARDIAN security is enforced, "
                 "and process monitoring is running. How can I assist you further?"
             )
@@ -103,21 +115,21 @@ class CyrusCore:
         # Schedule / daily tasks (in Hindi, Hinglish, or English)
         if any(w in clean for w in ["schedule", "plan", "aaj kya", "kya plan", "routine"]):
             return (
-                "I have reviewed your active agenda. You currently have your foundation review "
+                "I have reviewed your active agenda, Sir. You currently have your foundation review "
                 "and system architecture checks scheduled for today. Would you like me to prepare a detailed breakdown?"
             )
 
         # Business check
         if any(w in clean for w in ["business", "website", "company", "kaam"]):
             return (
-                "I am checking the connected business channels. All baseline telemetry records "
+                "I am checking the connected business channels, Sir. All baseline telemetry records "
                 "are intact and operating normally. Which specific project or metrics would you like to review?"
             )
 
         # Code / Developer assistance
         if any(w in clean for w in ["code", "build", "project", "github", "app", "application"]):
             return (
-                "Certainly, Saksham. CYRUS DEV is ready to assist with project inspection, "
+                "Certainly, Sir. CYRUS DEV is ready to assist with project inspection, "
                 "automated testing, and codebase architecture. Which project are we working on?"
             )
 
@@ -201,7 +213,7 @@ class CyrusCore:
 
         if stored_mem:
             response_text = (
-                f"Understood, Saksham. I have recorded that into your persistent personal memory: "
+                f"Understood, Sir. I have recorded that into your persistent personal memory: "
                 f"'{stored_mem['memory_key']}' is saved as '{stored_mem['memory_value']}'. "
                 "I will remember this across sessions and restarts."
             )

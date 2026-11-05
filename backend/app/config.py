@@ -65,6 +65,10 @@ class Settings:
     OLLAMA_FALLBACK_MODEL: str = os.getenv("OLLAMA_FALLBACK_MODEL", "qwen2.5:3b-instruct")
     OLLAMA_TIMEOUT_SECONDS: int = int(os.getenv("OLLAMA_TIMEOUT_SECONDS", "60"))
 
+    # --- User Identity & Form of Address ---
+    USER_REGISTERED_NAME: str = os.getenv("USER_REGISTERED_NAME", "Saksham Srivastava")
+    USER_FORM_OF_ADDRESS: str = os.getenv("USER_FORM_OF_ADDRESS", "Sir")
+
     # --- Mandatory Language Governance ---
     DEFAULT_RESPONSE_LANGUAGE: str = os.getenv("DEFAULT_RESPONSE_LANGUAGE", "English")
     INPUT_LANGUAGE_DETECTION: str = os.getenv("INPUT_LANGUAGE_DETECTION", "Automatic")

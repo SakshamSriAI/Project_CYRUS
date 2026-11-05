@@ -54,7 +54,7 @@ class SessionRecoveryManager:
         if not rows:
             return {
                 "has_previous_session": False,
-                "briefing": "Welcome, Saksham. All systems initialized. How can I assist you today?",
+                "briefing": "Welcome, Sir. All systems initialized. How can I assist you today?",
                 "status": "FRESH_START",
             }
 
@@ -84,14 +84,14 @@ class SessionRecoveryManager:
         is_clean_shutdown = last_status in ("SHUTDOWN", "EXAM_MODE")
         if is_clean_shutdown:
             briefing = (
-                f"Welcome back, Saksham. Your previous session ({session_id[:12]}) was saved successfully. "
+                f"Welcome back, Sir. Your previous session ({session_id[:12]}) was saved successfully. "
                 f"You have {task_count} unfinished tasks and {len(pending_approvals)} pending approvals. "
                 f"Shall we resume where you left off?"
             )
             recovery_status = "CLEAN_RESTORE"
         else:
             briefing = (
-                f"Welcome back, Saksham. CYRUS recovered from an unexpected shutdown. "
+                f"Welcome back, Sir. CYRUS recovered from an unexpected shutdown. "
                 f"All {msg_count} conversation messages and database checkpoints up to {last_heartbeat[:19]} "
                 f"have been safely restored with zero data corruption. How would you like to proceed?"
             )

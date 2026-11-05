@@ -230,7 +230,7 @@ class KokoroSpeechService:
     async def get_puck_preview(self) -> Dict[str, Any]:
         """Generates the signature preview sample for Puck (`am_puck`)."""
         preview_script = (
-            "Hello Saksham. I am CYRUS, speaking with the Puck voice profile. "
+            "Hello Sir. I am CYRUS, speaking with the Puck voice profile. "
             "Warm, natural, composed, and ready to assist you with your projects. "
             "How can I help you today?"
         )
@@ -242,7 +242,7 @@ class KokoroSpeechService:
         # Ensure CYRUS_Puck_preview.wav is created as the canonical named preview file
         canonical_preview = AUDIO_OUTPUT_DIR / "CYRUS_Puck_preview.wav"
         src_file = AUDIO_OUTPUT_DIR / res["audio_filename"]
-        if src_file.exists() and not canonical_preview.exists():
+        if src_file.exists():
             import shutil
             shutil.copyfile(src_file, canonical_preview)
 

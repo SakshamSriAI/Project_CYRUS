@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.2] - User Identity & Form of Address Policy: "Sir" - 2026-11-06
+
+### Added & Changed
+- **Permanent Form of Address Policy ("Sir")**:
+  - Registered User Identity: **Saksham Srivastava**.
+  - Form of Address: **"Sir"** across all direct conversations, text interactions, voice responses, greetings, and briefings.
+  - Enforced 9 rules: Never casually use first name in address; use "Sir" naturally and contextually; maintain respectful, articulate, JARVIS-like tone; preserve user's legal/account name for internal configuration/documents.
+- **System Prompt & Orchestrator Updates**:
+  - `backend/app/core/orchestrator.py`: `CYRUS_SYSTEM_PROMPT` updated with mandatory Form of Address policy. Deterministic fallback responses and memory confirmations updated to address the user as "Sir".
+  - `backend/app/config.py`: Added `USER_REGISTERED_NAME` and `USER_FORM_OF_ADDRESS`.
+  - `backend/app/memory/session_recovery.py`: Clean restore and crash recovery briefings updated to "Welcome back, Sir."
+  - `backend/app/voice/kokoro_service.py`: Re-synthesized neural Puck signature preview audio addressing the user as "Sir".
+  - `frontend/src/components/Voice/VoiceStudio.tsx`: Default audition texts and presets updated to "Sir".
+- **Persistent Memory Seeding**:
+  - Stored `preferred_form_of_address` ("Sir") and `user_identity` ("Saksham Srivastava") into SQLite `memory_items` under `MemoryCategory.PERSONAL`, persisting across restarts.
+- **Verification**:
+  - `test_form_of_address_sir_in_conversational_response` added to `backend/tests/test_phase2_core.py`.
+  - All 46 automated unit tests passing with 100% pass rate.
+
+---
+
 ## [0.6.1] - Phase 5 Extension: Kokoro TTS & Puck Voice Configuration - 2026-11-06
 
 ### Added

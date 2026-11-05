@@ -99,6 +99,17 @@ class TestPhase2CoreOrchestrator(unittest.IsolatedAsyncioTestCase):
         is_compliant, _ = language_governance.validate_response_compliance(clean_english)
         self.assertTrue(is_compliant)
 
+    async def test_form_of_address_sir_in_conversational_response(self):
+        # Direct conversation greeting must address user as Sir
+        res = await cyrus_core.process_message("Good morning, CYRUS.")
+        self.assertIn("Sir", res["response"])
+        self.assertNotIn("Saksham", res["response"])
+
+        # Code inquiry must address user as Sir
+        code_res = await cyrus_core.process_message("Help me build an application.")
+        self.assertIn("Sir", code_res["response"])
+        self.assertNotIn("Saksham", code_res["response"])
+
 
 def run():
     suite = unittest.TestLoader().loadTestsFromTestCase(TestPhase2CoreOrchestrator)

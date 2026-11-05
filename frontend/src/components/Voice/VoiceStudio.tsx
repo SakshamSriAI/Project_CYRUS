@@ -19,7 +19,7 @@ export const VoiceStudio: React.FC = () => {
 
   // Audition State
   const [auditionText, setAuditionText] = useState(
-    'Good day, Saksham. All systems are operational. I am running natively on your MacBook Air.'
+    'Good day, Sir. All systems are operational. I am running natively on your MacBook Air.'
   );
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -389,7 +389,7 @@ export const VoiceStudio: React.FC = () => {
             <button
               onClick={() =>
                 setAuditionText(
-                  'Good morning, Saksham. All systems are operational. I have reviewed your agenda for today. Shall we begin?'
+                  'Good morning, Sir. All systems are operational. I have reviewed your agenda for today. Shall we begin?'
                 )
               }
               className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-cyan-300"
@@ -399,7 +399,7 @@ export const VoiceStudio: React.FC = () => {
             <button
               onClick={() =>
                 setAuditionText(
-                  'I ran the unit test suite across all modules. 39 tests passed in 0.13 seconds with zero memory leaks.'
+                  'I ran the unit test suite across all modules. 45 tests passed in 0.14 seconds with zero memory leaks.'
                 )
               }
               className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-cyan-300"
@@ -409,7 +409,7 @@ export const VoiceStudio: React.FC = () => {
             <button
               onClick={() =>
                 setAuditionText(
-                  'Certainly, Saksham. I will remember that preference and apply it to all future sessions.'
+                  'Certainly, Sir. I will remember that preference and apply it to all future sessions.'
                 )
               }
               className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-cyan-300"
