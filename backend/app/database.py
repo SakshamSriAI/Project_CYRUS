@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS memory_items (
     tenant_id TEXT DEFAULT 'default',
     memory_key TEXT NOT NULL,
     memory_value TEXT NOT NULL,
+    fact_type TEXT DEFAULT 'VERIFIED_FACT',
     confidence REAL DEFAULT 1.0,
     source TEXT DEFAULT 'user_explicit',
     is_active INTEGER DEFAULT 1,
@@ -152,6 +153,11 @@ async def init_db() -> Dict[str, Any]:
         try:
             with conn:
                 conn.executescript(SCHEMA_SQL)
+                # Ensure fact_type column exists in existing tables
+                try:
+                    conn.execute("ALTER TABLE memory_items ADD COLUMN fact_type TEXT DEFAULT 'VERIFIED_FACT';")
+                except sqlite3.OperationalError:
+                    pass  # Column already exists
             cur = conn.execute("PRAGMA journal_mode;")
             journal_mode = cur.fetchone()[0]
             cur = conn.execute("SELECT count(*) FROM sqlite_master WHERE type='table';")

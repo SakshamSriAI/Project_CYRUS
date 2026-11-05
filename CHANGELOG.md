@@ -6,36 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - Phase 4: CYRUS Persistent Memory Subsystem - 2026-11-05
+
+### Added
+- **Three-Tier Persistent Memory Engine**:
+  - `backend/app/memory/models.py`: Definitions for `MemoryCategory` (Personal, Business, Working) and `FactType` (Verified Fact, Preference, Routine, Assumption, Task Goal).
+  - `backend/app/memory/memory_store.py`: SQLite persistence supporting upsert, soft/hard deletion, multi-tenant isolation, and confidence scoring.
+- **Context Injection & Auto-Extraction Engine**:
+  - `backend/app/memory/context_manager.py`: Formulates dynamic context blocks for prompts and auto-extracts explicit memory statements from chat ("Remember that...").
+- **Session Persistence & Crash Recovery**:
+  - `backend/app/memory/session_recovery.py`: Incremental state checkpoints, dirty-exit detection, and JARVIS-inspired session recovery briefings.
+- **Memory REST API**:
+  - `backend/app/api/v1/memory.py`: Endpoints for querying memories, saving facts, deleting entries, and retrieving recovery reports.
+- **Frontend Memory Center**:
+  - `frontend/src/components/Memory/MemoryCenter.tsx`: Category tabs (Personal, Business, Working), search, add form, delete controls, and recovery briefing banner.
+- **Testing & Verification**:
+  - `backend/tests/test_phase4_memory.py`: 7 automated tests covering CRUD, multi-tenant isolation, auto-extraction, and crash recovery.
+  - All 33 automated tests passing with a 100% pass rate.
+
+---
+
 ## [0.4.0] - Phase 3: CYRUS GUARDIAN Deep Security Subsystem - 2026-11-05
 
 ### Added
-- **4-Tier Permission Model & Sandbox Boundaries**:
-  - `backend/app/guardian/permissions.py`: Code-enforced L1 Read, L2 Prepare, L3 Execute, L4 Restricted gating.
-- **Human-in-the-Loop Approval Workflow**:
-  - `backend/app/guardian/approval.py`: Interactive approval requests in SQLite `approval_requests` with consequence disclosures.
-  - Automatic 10-minute TTL expiration for unhandled requests.
-  - Explicit approval and rejection endpoints.
-- **Prompt Injection Defense & Untrusted Context Isolation**:
-  - `backend/app/guardian/prompt_injection.py`: Regex pattern scanner neutralizing jailbreak/override attempts.
-  - `<untrusted_content>` boundary wrapper isolating external web and document text.
-- **Emergency Stop (CYRUS STOP) Kill Switch**:
-  - `backend/app/guardian/emergency_stop.py`: Application-level freeze stopping new tasks, terminating child processes, and revoking tokens.
-- **Session Authentication & Identity Binding**:
-  - `backend/app/guardian/auth.py`: HMAC-SHA256 session token generation and sovereign owner identity bound to Saksham.
-- **Security REST API**:
-  - `backend/app/api/v1/guardian.py`: Endpoints for status, pending approvals, approve/reject, audit logs, and emergency halt.
-- **Frontend Security Center**:
-  - `frontend/src/components/Security/SecurityCenter.tsx`: UI for reviewing pending approvals, viewing audit logs, and triggering CYRUS STOP.
-- **Testing & Verification**:
-  - `backend/tests/test_phase3_guardian.py`: 7 automated tests covering permissions, approvals, expiration, prompt injection, and emergency stops.
-  - All 26 tests passing with a 100% pass rate.
+- 4-tier permission model, interactive approval workflow, prompt-injection defense, CYRUS STOP kill switch, and audit ledger.
 
 ---
 
 ## [0.3.0] - Phase 2: CYRUS CORE & Local AI Integration - 2026-11-05
 
 ### Added
-- CYRUS CORE conversational orchestrator, Ollama interface, language policy guard, and chat API.
+- Conversational orchestrator, Ollama interface, language policy guard, and chat API.
 
 ---
 

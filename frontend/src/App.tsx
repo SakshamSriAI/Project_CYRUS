@@ -5,6 +5,7 @@ import { LifecycleControls } from './components/Dashboard/LifecycleControls';
 import { LanguageIndicator } from './components/Dashboard/LanguageIndicator';
 import { ChatCenter } from './components/Chat/ChatCenter';
 import { SecurityCenter } from './components/Security/SecurityCenter';
+import { MemoryCenter } from './components/Memory/MemoryCenter';
 
 interface HealthData {
   status: string;
@@ -86,6 +87,9 @@ export const App: React.FC = () => {
 
       {/* Main Conversation & Intelligence Center */}
       <ChatCenter />
+
+      {/* CYRUS MEMORY Center */}
+      <MemoryCenter />
 
       {/* CYRUS GUARDIAN Security Center */}
       <SecurityCenter />

@@ -22,6 +22,8 @@ from backend.app.database import execute_query, execute_write
 from backend.app.guardian.audit import log_audit_event
 from backend.app.guardian.emergency_stop import emergency_controller
 from backend.app.guardian.prompt_injection import prompt_guard
+from backend.app.memory.context_manager import context_manager
+from backend.app.memory.session_recovery import session_recovery
 
 logger = logging.getLogger("cyrus.core")
 
@@ -181,7 +183,10 @@ class CyrusCore:
         detected_language = self.language_gate.detect_input_language(processed_input)
         logger.info("User prompt received [%s]: %s", detected_language, processed_input[:60])
 
-        # Step 2: Record User Message to SQLite
+        # Step 2b: Check for Explicit Memory Update ("Remember that...")
+        stored_mem = await context_manager.detect_and_store_explicit_memory(processed_input, detected_language)
+
+        # Step 3: Record User Message to SQLite
         user_msg_id = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
         await execute_write(
@@ -189,19 +194,27 @@ class CyrusCore:
             (user_msg_id, active_session, user_message, detected_language, user_message, now),
         )
 
-        # Step 3: Check Ollama connectivity & query model
+        # Step 4: Check Ollama connectivity & query model
         is_ollama_live = await self.llm.is_connected()
         response_text = ""
         model_used = "deterministic-core"
 
-        if is_ollama_live:
-            # Build conversation context prompt
+        if stored_mem:
+            response_text = (
+                f"Understood, Saksham. I have recorded that into your persistent personal memory: "
+                f"'{stored_mem['memory_key']}' is saved as '{stored_mem['memory_value']}'. "
+                "I will remember this across sessions and restarts."
+            )
+        elif is_ollama_live:
+            # Build conversation context prompt with persistent memory
             history = await self.get_conversation_history(active_session, limit=6)
             context_str = "\n".join([f"{msg['role'].capitalize()}: {msg['content']}" for msg in history[:-1]])
+            memory_block = await context_manager.build_context_prompt(session_id=active_session)
 
             full_prompt = (
+                f"{memory_block}\n\n"
                 f"Previous Context:\n{context_str}\n\n"
-                f"User ({detected_language} input): {user_message}\n\n"
+                f"User ({detected_language} input): {processed_input}\n\n"
                 f"Respond in English:"
             )
 
@@ -216,9 +229,9 @@ class CyrusCore:
                 model_used = llm_res.get("model", settings.OLLAMA_DEFAULT_MODEL)
             else:
                 logger.warning("Local LLM call failed, reverting to baseline fallback: %s", llm_res.get("error"))
-                response_text = self._generate_offline_fallback(user_message, detected_language)
+                response_text = self._generate_offline_fallback(processed_input, detected_language)
         else:
-            response_text = self._generate_offline_fallback(user_message, detected_language)
+            response_text = self._generate_offline_fallback(processed_input, detected_language)
 
         # Step 4: Strict English Output Policy Enforcement
         is_compliant, compliance_reason = self.language_gate.validate_response_compliance(response_text)
