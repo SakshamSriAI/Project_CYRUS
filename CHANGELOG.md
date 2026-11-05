@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.1] - Phase 5 Extension: Kokoro TTS & Puck Voice Configuration - 2026-11-06
+
+### Added
+- **Kokoro TTS Neural Engine with Puck Default Voice (`am_puck`)**:
+  - `backend/app/voice/kokoro_service.py`: Local neural TTS inference engine outputting studio-grade 24 kHz audio.
+  - Puck (`am_puck`) configured as CYRUS default voice: American English masculine, warm, conversational, articulate, intelligent, composed, subtly witty, zero robotic cadence.
+  - Jessica (`af_jessica`) configured as alternative feminine voice.
+- **Natural Speech Text Preprocessor**:
+  - `backend/app/voice/text_preprocessor.py`: Strips markdown formatting, code blocks, and URLs; phonetically expands technical abbreviations (`API` -> `A P I`, `SQLite` -> `S Q L lite`, `WAL` -> `W A L`, `RAM` -> `R A M`, `GB` -> `gigabytes`, `B.Tech` -> `B Tech`); chunks text for natural breathing pauses.
+- **Persistent Voice Preferences**:
+  - `backend/app/voice/voice_preferences.py`: Persistent storage of voice preferences (voice ID, speech speed, voice enabled/disabled) in SQLite under `MemoryCategory.PERSONAL`, surviving full system shutdowns and reboots.
+- **Dedicated CYRUS Voice Studio**:
+  - `frontend/src/components/Voice/VoiceStudio.tsx`: Full Voice Studio UI with default voice selector, Puck signature preview button, custom text auditioning, play/pause/stop controls, speech speed slider (0.75x–1.5x), live microphone volume testing, and engine status monitor.
+- **Voice Studio REST Endpoints**:
+  - `backend/app/api/v1/voice.py`: Added `/studio/config`, `/studio/preview`, `/studio/audition`, and `/audio/{filename}` audio streaming.
+- **Test Suite**:
+  - `backend/tests/test_phase5_kokoro_puck.py`: 6 tests verifying preprocessor acronym expansion, preference persistence across SQLite reloads, 24kHz audio synthesis, Puck signature preview, custom text auditioning, and English output enforcement.
+  - All 45 automated tests passing with 100% pass rate.
+
+---
+
 ## [0.6.0] - Phase 5: CYRUS Local Voice Interaction Subsystem - 2026-11-05
 
 ### Added

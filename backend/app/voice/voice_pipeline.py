@@ -3,8 +3,8 @@
 Coordinates:
 1. Speech-to-Text parsing (wake-word + language detection).
 2. CYRUS CORE conversational intelligence.
-3. Strict English output verification.
-4. Text-to-Speech synthesis with interruptibility.
+3. Centralized English output verification.
+4. Kokoro TTS neural synthesis with Puck (`am_puck`) as the default voice.
 5. Exam Mode & Emergency Halt hardware protection.
 """
 
@@ -13,20 +13,22 @@ from typing import Any, Dict, Optional
 from backend.app.core.orchestrator import cyrus_core
 from backend.app.guardian.emergency_stop import emergency_controller
 from backend.app.lifecycle.process_manager import LifecycleState, process_manager
+from backend.app.voice.kokoro_service import kokoro_service
 from backend.app.voice.stt_service import stt_service
-from backend.app.voice.tts_service import tts_service
+from backend.app.voice.voice_preferences import voice_preferences
 
 logger = logging.getLogger("cyrus.voice.pipeline")
 
 
 class VoicePipeline:
-    """End-to-end voice loop orchestrator."""
+    """End-to-end voice loop orchestrator with Kokoro Puck default voice."""
 
     async def execute_voice_turn(
         self,
         raw_transcript: str,
         session_id: Optional[str] = None,
         voice: Optional[str] = None,
+        speed: Optional[float] = None,
         speak_on_mac: bool = False,
     ) -> Dict[str, Any]:
         """Processes a full voice turn from spoken audio/transcript to synthesized English speech."""
@@ -36,7 +38,7 @@ class VoicePipeline:
                 "success": False,
                 "error": "Voice disabled: CYRUS STOP is currently activated.",
                 "response_text": "CYRUS STOP is active. Voice interaction is locked.",
-                "speech_payload": tts_service.prepare_speech_payload("CYRUS STOP is active. Voice is locked."),
+                "voice_id": "am_puck",
             }
 
         if process_manager.current_state == LifecycleState.EXAM_MODE:
@@ -44,7 +46,7 @@ class VoicePipeline:
                 "success": False,
                 "error": "Voice disabled: Exam Mode is active (Microphone and audio are released).",
                 "response_text": "Exam mode is active. Voice processing is disabled.",
-                "speech_payload": tts_service.prepare_speech_payload("Exam mode is active."),
+                "voice_id": "am_puck",
             }
 
         # 2. Parse Speech Input (STT)
@@ -54,13 +56,19 @@ class VoicePipeline:
                 "success": False,
                 "error": "No audible speech recognized.",
                 "response_text": "I could not detect any audible speech. How can I help you?",
+                "voice_id": "am_puck",
             }
 
         clean_text = stt_result["clean_text"]
         detected_lang = stt_result["detected_language"]
         wake_word_triggered = stt_result["wake_word_triggered"]
 
-        # 3. Process through CYRUS CORE
+        # 3. Retrieve Persistent Voice Preferences
+        prefs = await voice_preferences.get_preferences()
+        chosen_voice = voice or prefs.voice_id  # am_puck by default
+        chosen_speed = speed if speed is not None else prefs.speed
+
+        # 4. Process through CYRUS CORE Intelligence
         core_result = await cyrus_core.process_message(
             user_message=clean_text,
             session_id=session_id,
@@ -68,20 +76,12 @@ class VoicePipeline:
 
         response_text = core_result["response"]
 
-        # 4. Prepare Synthesized Speech (TTS)
-        speech_payload = tts_service.prepare_speech_payload(
+        # 5. Synthesize Natural Spoken Speech via Kokoro (`am_puck`)
+        synthesis_result = await kokoro_service.synthesize_speech(
             text=response_text,
-            voice=voice,
+            voice_id=chosen_voice,
+            speed=chosen_speed,
         )
-
-        # 5. Optional Direct Mac Speaker Output
-        backend_spoken = False
-        if speak_on_mac:
-            tts_res = await tts_service.speak_locally_on_mac(
-                text=response_text,
-                voice=voice,
-            )
-            backend_spoken = tts_res.get("backend_spoken", False)
 
         return {
             "success": True,
@@ -93,8 +93,19 @@ class VoicePipeline:
             "response_text": response_text,
             "response_language": "English",
             "model_used": core_result.get("model_used", "deterministic-core"),
-            "speech_payload": speech_payload,
-            "backend_spoken": backend_spoken,
+            "speech_payload": {
+                "text": response_text,
+                "voice": synthesis_result["voice_id"],
+                "audio_url": synthesis_result["audio_url"],
+            },
+            "voice": {
+                "voice_id": synthesis_result["voice_id"],
+                "voice_name": synthesis_result["voice_name"],
+                "speed": synthesis_result["speed"],
+                "audio_url": synthesis_result["audio_url"],
+                "duration_seconds": synthesis_result["duration_seconds"],
+                "engine": "Kokoro TTS",
+            },
         }
 
 

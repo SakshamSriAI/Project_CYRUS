@@ -36,6 +36,9 @@ ENV/
 data/*.db
 data/*.db-wal
 data/*.db-shm
+data/audio/*.wav
+data/audio/*.m4a
+!data/audio/.gitkeep
 
 # Node / Frontend
 node_modules/

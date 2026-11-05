@@ -5,6 +5,7 @@ import { LifecycleControls } from './components/Dashboard/LifecycleControls';
 import { LanguageIndicator } from './components/Dashboard/LanguageIndicator';
 import { ChatCenter } from './components/Chat/ChatCenter';
 import { VoiceCenter } from './components/Voice/VoiceCenter';
+import { VoiceStudio } from './components/Voice/VoiceStudio';
 import { SecurityCenter } from './components/Security/SecurityCenter';
 import { MemoryCenter } from './components/Memory/MemoryCenter';
 
@@ -91,6 +92,9 @@ export const App: React.FC = () => {
 
       {/* CYRUS VOICE Center */}
       <VoiceCenter />
+
+      {/* CYRUS VOICE STUDIO (Kokoro TTS & Puck Voice) */}
+      <VoiceStudio />
 
       {/* CYRUS MEMORY Center */}
       <MemoryCenter />
