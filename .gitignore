@@ -40,6 +40,11 @@ data/audio/*.wav
 data/audio/*.m4a
 !data/audio/.gitkeep
 
+# Local AI Models & Weights
+data/models/
+*.onnx
+*.bin
+
 # Node / Frontend
 node_modules/
 frontend/dist/
