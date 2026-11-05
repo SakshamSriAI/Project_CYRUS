@@ -4,6 +4,7 @@ import { SystemDiagnostics } from './components/Dashboard/SystemDiagnostics';
 import { LifecycleControls } from './components/Dashboard/LifecycleControls';
 import { LanguageIndicator } from './components/Dashboard/LanguageIndicator';
 import { ChatCenter } from './components/Chat/ChatCenter';
+import { VoiceCenter } from './components/Voice/VoiceCenter';
 import { SecurityCenter } from './components/Security/SecurityCenter';
 import { MemoryCenter } from './components/Memory/MemoryCenter';
 
@@ -87,6 +88,9 @@ export const App: React.FC = () => {
 
       {/* Main Conversation & Intelligence Center */}
       <ChatCenter />
+
+      {/* CYRUS VOICE Center */}
+      <VoiceCenter />
 
       {/* CYRUS MEMORY Center */}
       <MemoryCenter />

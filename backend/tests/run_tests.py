@@ -1,6 +1,6 @@
 """CYRUS Comprehensive Unit Test Runner (Zero-Dependency Python Standard Library).
 
-Runs all architectural and component tests for Phase 1, Phase 2, Phase 3, and Phase 4.
+Runs all architectural and component tests for Phase 1, Phase 2, Phase 3, Phase 4, and Phase 5.
 """
 
 import asyncio
@@ -31,6 +31,7 @@ from backend.app.lifecycle.process_manager import (
 from backend.tests.test_phase2_core import TestPhase2CoreOrchestrator
 from backend.tests.test_phase3_guardian import TestPhase3Guardian
 from backend.tests.test_phase4_memory import TestPhase4Memory
+from backend.tests.test_phase5_voice import TestPhase5Voice
 
 
 class TestLanguageGovernance(unittest.TestCase):
@@ -198,6 +199,7 @@ def run():
         loader.loadTestsFromTestCase(TestPhase2CoreOrchestrator),
         loader.loadTestsFromTestCase(TestPhase3Guardian),
         loader.loadTestsFromTestCase(TestPhase4Memory),
+        loader.loadTestsFromTestCase(TestPhase5Voice),
     ])
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)

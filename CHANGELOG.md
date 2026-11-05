@@ -6,23 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - Phase 5: CYRUS Local Voice Interaction Subsystem - 2026-11-05
+
+### Added
+- **Speech-to-Text (STT) Engine**:
+  - `backend/app/voice/stt_service.py`: Multilingual speech recognition for English, Hindi, and Hinglish.
+  - Wake-word parsing (`"Hey CYRUS"`, `"CYRUS"`).
+- **Text-to-Speech (TTS) Engine**:
+  - `backend/app/voice/tts_service.py`: Zero-cost local voice synthesis using macOS native `say` and browser Web Speech API.
+  - Curated English voices (Daniel UK, Samantha US, Karen AU).
+  - Post-generation speech sanitizer guaranteeing 100% English speech.
+  - Speech interruptibility.
+- **End-to-End Voice Pipeline**:
+  - `backend/app/voice/voice_pipeline.py`: Coordinates STT -> CORE -> GUARDIAN -> MEMORY -> TTS.
+  - Automatic microphone release on Exam Mode and Emergency Stop.
+- **Voice REST API**:
+  - `backend/app/api/v1/voice.py`: Endpoints for voice status, full turn interaction, text synthesis, and speech interruption.
+- **Frontend Voice Center**:
+  - `frontend/src/components/Voice/VoiceCenter.tsx`: Circular animated visualizer orb, Push-to-Talk, voice selector dropdown, and quick simulation buttons.
+- **CLI Voice Tool**:
+  - `scripts/cyrus_ctl.sh voice`: Direct command-line voice testing with local macOS speaker playback.
+- **Testing & Verification**:
+  - `backend/tests/test_phase5_voice.py`: 6 automated tests covering wake-words, multilingual parsing, English speech enforcement, Exam Mode lock, and speech interruption.
+  - All 39 automated tests passing with a 100% pass rate.
+
+---
+
 ## [0.5.0] - Phase 4: CYRUS Persistent Memory Subsystem - 2026-11-05
 
 ### Added
-- **Three-Tier Persistent Memory Engine**:
-  - `backend/app/memory/models.py`: Definitions for `MemoryCategory` (Personal, Business, Working) and `FactType` (Verified Fact, Preference, Routine, Assumption, Task Goal).
-  - `backend/app/memory/memory_store.py`: SQLite persistence supporting upsert, soft/hard deletion, multi-tenant isolation, and confidence scoring.
-- **Context Injection & Auto-Extraction Engine**:
-  - `backend/app/memory/context_manager.py`: Formulates dynamic context blocks for prompts and auto-extracts explicit memory statements from chat ("Remember that...").
-- **Session Persistence & Crash Recovery**:
-  - `backend/app/memory/session_recovery.py`: Incremental state checkpoints, dirty-exit detection, and JARVIS-inspired session recovery briefings.
-- **Memory REST API**:
-  - `backend/app/api/v1/memory.py`: Endpoints for querying memories, saving facts, deleting entries, and retrieving recovery reports.
-- **Frontend Memory Center**:
-  - `frontend/src/components/Memory/MemoryCenter.tsx`: Category tabs (Personal, Business, Working), search, add form, delete controls, and recovery briefing banner.
-- **Testing & Verification**:
-  - `backend/tests/test_phase4_memory.py`: 7 automated tests covering CRUD, multi-tenant isolation, auto-extraction, and crash recovery.
-  - All 33 automated tests passing with a 100% pass rate.
+- Three-tier memory engine (Personal, Business, Working), multi-tenant isolation, context manager prompt injection, auto-extraction, and session recovery briefings.
 
 ---
 
