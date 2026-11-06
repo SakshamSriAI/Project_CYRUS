@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] - Phase 6: CYRUS Specialist Agent Framework - 2026-11-06
+
+### Added
+- **Base Specialist Agent Architecture**:
+  - `backend/app/agents/base_agent.py`: `BaseAgent` class enforcing universal "Sir" address, 100% English outputs, GUARDIAN security boundary verification, and task lifecycle checkpoints in SQLite `agent_tasks`.
+- **Five Core Specialist Agents**:
+  - `backend/app/agents/personal_agent.py` (**CYRUS PERSONAL**): Daily agenda management, B.Tech CS study planning, habit tracking, and personal memory recall.
+  - `backend/app/agents/business_agent.py` (**CYRUS BUSINESS**): Multi-tenant portfolio isolation, invoice/receivables tracking, pipeline telemetry, and revenue health analysis.
+  - `backend/app/agents/dev_agent.py` (**CYRUS DEV**): Codebase architecture review, automated test verification, Git version tracking, and L1-L4 GUARDIAN-gated tool execution.
+  - `backend/app/agents/research_agent.py` (**CYRUS RESEARCH**): Structured scientific inquiry, comparative analysis, factual trade-off matrices, and verified citation formatting.
+  - `backend/app/agents/executive_agent.py` (**CYRUS EXECUTIVE**): Unified daily morning briefings, end-of-day retrospectives, cross-agent coordination, and system readiness aggregation.
+- **Specialist Agent Registry & Intent Router**:
+  - `backend/app/agents/agent_registry.py`: Central singleton managing agent listing, semantic intent routing (`route_intent`), direct dispatching, and recent task logging.
+- **Specialist Agents REST API**:
+  - `backend/app/api/v1/agents.py`: Endpoints for listing agents (`GET /agents`), agent details (`GET /agents/{name}`), direct dispatching (`POST /agents/{name}/dispatch`), auto-delegation (`POST /agents/delegate`), and task history (`GET /agents/tasks/history`).
+- **Frontend Agent Center**:
+  - `frontend/src/components/Agents/AgentCenter.tsx`: 5 specialist agent cards with status tags, interactive task dispatcher with preset action chips, live task output window, and recent task log table.
+- **Testing & Verification**:
+  - `backend/tests/test_phase6_agents.py`: 9 unit tests verifying agent listing, personal study planning, business tenant isolation, dev GUARDIAN gating, research citations, executive briefings, multi-agent intent routing, Exam Mode blocking, and Emergency Halt blocking.
+  - All 55 automated architectural unit tests passing with 100% pass rate in 0.155s.
+
+---
+
 ## [0.6.2] - User Identity & Form of Address Policy: "Sir" - 2026-11-06
 
 ### Added & Changed

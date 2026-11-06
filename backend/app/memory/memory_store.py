@@ -109,6 +109,7 @@ class MemoryStore:
         tenant_id: str = "default",
         search_term: Optional[str] = None,
         include_inactive: bool = False,
+        limit: Optional[int] = None,
     ) -> List[Dict[str, Any]]:
         """Lists memories matching filters and search queries."""
         query = "SELECT * FROM memory_items WHERE tenant_id = ?"
@@ -127,7 +128,11 @@ class MemoryStore:
             term = f"%{search_term.strip()}%"
             params.extend([term, term])
 
-        query += " ORDER BY updated_at DESC;"
+        query += " ORDER BY updated_at DESC"
+        if limit:
+            query += " LIMIT ?"
+            params.append(limit)
+        query += ";"
         rows = await execute_query(query, tuple(params))
         return rows
 

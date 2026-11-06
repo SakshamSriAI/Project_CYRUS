@@ -8,6 +8,7 @@ import { VoiceCenter } from './components/Voice/VoiceCenter';
 import { VoiceStudio } from './components/Voice/VoiceStudio';
 import { SecurityCenter } from './components/Security/SecurityCenter';
 import { MemoryCenter } from './components/Memory/MemoryCenter';
+import { AgentCenter } from './components/Agents/AgentCenter';
 
 interface HealthData {
   status: string;
@@ -98,6 +99,9 @@ export const App: React.FC = () => {
 
       {/* CYRUS MEMORY Center */}
       <MemoryCenter />
+
+      {/* CYRUS AGENT Center (Phase 6 Specialist Agents) */}
+      <AgentCenter />
 
       {/* CYRUS GUARDIAN Security Center */}
       <SecurityCenter />

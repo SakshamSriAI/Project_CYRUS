@@ -33,6 +33,7 @@ from backend.tests.test_phase3_guardian import TestPhase3Guardian
 from backend.tests.test_phase4_memory import TestPhase4Memory
 from backend.tests.test_phase5_voice import TestPhase5Voice
 from backend.tests.test_phase5_kokoro_puck import TestPhase5KokoroPuck
+from backend.tests.test_phase6_agents import TestPhase6Agents
 
 
 class TestLanguageGovernance(unittest.TestCase):
@@ -202,6 +203,7 @@ def run():
         loader.loadTestsFromTestCase(TestPhase4Memory),
         loader.loadTestsFromTestCase(TestPhase5Voice),
         loader.loadTestsFromTestCase(TestPhase5KokoroPuck),
+        loader.loadTestsFromTestCase(TestPhase6Agents),
     ])
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
