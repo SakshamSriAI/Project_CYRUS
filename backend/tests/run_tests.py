@@ -35,6 +35,7 @@ from backend.tests.test_phase5_voice import TestPhase5Voice
 from backend.tests.test_phase5_kokoro_puck import TestPhase5KokoroPuck
 from backend.tests.test_phase6_agents import TestPhase6Agents
 from backend.tests.test_phase7_research import TestPhase7Research
+from backend.tests.test_phase8_business import TestPhase8Business
 
 
 class TestLanguageGovernance(unittest.TestCase):
@@ -206,6 +207,7 @@ def run():
         loader.loadTestsFromTestCase(TestPhase5KokoroPuck),
         loader.loadTestsFromTestCase(TestPhase6Agents),
         loader.loadTestsFromTestCase(TestPhase7Research),
+        loader.loadTestsFromTestCase(TestPhase8Business),
     ])
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)

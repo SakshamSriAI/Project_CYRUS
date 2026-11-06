@@ -10,6 +10,7 @@ import { SecurityCenter } from './components/Security/SecurityCenter';
 import { MemoryCenter } from './components/Memory/MemoryCenter';
 import { AgentCenter } from './components/Agents/AgentCenter';
 import { ResearchCenter } from './components/Research/ResearchCenter';
+import { BusinessCenter } from './components/Business/BusinessCenter';
 
 interface HealthData {
   status: string;
@@ -106,6 +107,9 @@ export const App: React.FC = () => {
 
       {/* CYRUS RESEARCH & APPROVED COMPUTER ACCESS (Phase 7) */}
       <ResearchCenter />
+
+      {/* CYRUS BUSINESS INTELLIGENCE & INTEGRATIONS (Phase 8) */}
+      <BusinessCenter />
 
       {/* CYRUS GUARDIAN Security Center */}
       <SecurityCenter />

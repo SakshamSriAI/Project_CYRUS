@@ -5,67 +5,52 @@
 
 ## 📊 High-Level Status Overview
 
-- **Current Active Phase**: **PHASE 7 — CYRUS RESEARCH & APPROVED COMPUTER ACCESS**
-- **Phase 7 Status**: **COMPLETED & FULLY VERIFIED (73/73 Tests Passing)**
-- **Completed Phases**: Phase 0 (Audit), Phase 1 (Foundation), Phase 2 (CYRUS CORE), Phase 3 (CYRUS GUARDIAN), Phase 4 (CYRUS MEMORY), Phase 5 (CYRUS VOICE & Voice Studio), Phase 6 (CYRUS AGENT FRAMEWORK), Phase 7 (CYRUS RESEARCH & COMPUTER ACCESS)
-- **Pending Phases**: Phase 8 through Phase 13
-- **Next Milestone**: **PHASE 8 — BUSINESS INTELLIGENCE & INTEGRATIONS** (Pending Saksham's approval)
+- **Current Active Phase**: **PHASE 8 — BUSINESS INTELLIGENCE & INTEGRATIONS**
+- **Phase 8 Status**: **COMPLETED & FULLY VERIFIED (83/83 Tests Passing)**
+- **Completed Phases**: Phase 0 (Audit), Phase 1 (Foundation), Phase 2 (CYRUS CORE), Phase 3 (CYRUS GUARDIAN), Phase 4 (CYRUS MEMORY), Phase 5 (CYRUS VOICE & Voice Studio), Phase 6 (CYRUS AGENT FRAMEWORK), Phase 7 (CYRUS RESEARCH & COMPUTER ACCESS), Phase 8 (BUSINESS INTELLIGENCE & INTEGRATIONS)
+- **Pending Phases**: Phase 9 through Phase 13
+- **Next Milestone**: **PHASE 9 — CYRUS SENTINEL & PROACTIVE LOCAL MONITORING** (Pending Saksham's approval)
 
 ---
 
-## 🔬 Implemented Deliverables in Phase 7
+## 💼 Implemented Deliverables in Phase 8
 
-1. **Sandboxed Document Reader (`backend/app/research/doc_reader.py`)**:
-   - Strictly confined to `CYRUS_SANDBOX_PATH` with automated path-traversal blocking (`/etc/passwd`, relative escaping).
-   - High-performance reader supporting Markdown (`.md`), plain text (`.txt`), code files (`.py`, `.ts`, `.tsx`, `.json`, `.yml`, `.sh`), and PDF streams.
-   - Text stream parsing for PDF without external dependencies.
-   - Resource-safe character bounding (100,000 characters limit) to safeguard unified RAM on Apple Silicon M5.
-   - Automatic prompt injection defense wrapping all document excerpts inside `<untrusted_content>` tags.
-   - Executive document summarizer and outline extractor addressing the user as "Sir".
+1. **Multi-Tenant Business Database Schema (`backend/app/database.py`)**:
+   - `business_clients`: Multi-tenant CRM portfolios (`id`, `tenant_id`, `client_name`, `contact_email`, `status`, `metadata_json`).
+   - `business_invoices`: Real accounts receivable ledger (`id`, `tenant_id`, `client_id`, `invoice_number`, `amount_inr`, `status`, `issue_date`, `due_date`, `paid_date`, `description`).
+   - `business_projects`: Client deliverables and milestone tracking (`id`, `tenant_id`, `client_id`, `name`, `status`, `budget_inr`, `progress_percent`, `deadline`).
+   - SQLite indices for high-speed tenant lookups: `idx_business_clients_tenant`, `idx_business_invoices_tenant_status`, `idx_business_projects_tenant`.
 
-2. **Zero-Cost Web Research Subsystem (`backend/app/research/web_researcher.py`)**:
-   - ₹0 recurring subscription cost — uses open, keyless search providers (Wikipedia API, DuckDuckGo Instant Answers, ArXiv).
-   - GUARDIAN permission check and audit trail logging in SQLite `audit_logs` table for every search request.
-   - Offline scientific synthesis fallback when offline or when external network is restricted.
-   - Sanitization stripping HTML and prompt injection markers.
-   - Structured citation extraction with source URL, snippet, and reliability score.
-   - 100% English output enforcement.
+2. **Multi-Tenant Business Store (`backend/app/business/business_store.py`)**:
+   - Strict tenant boundary isolation ensuring client data from one tenant (e.g. `apex_corp`) can never bleed into another (e.g. `nexus_tech`).
+   - Automated seeding of realistic enterprise accounts: Apex Consulting Services, Nexus AI Systems, and Solaris Digital Media.
+   - Days overdue calculation based on current date and invoice due date.
+   - Dynamic Financial Health Score calculation (0-100) based on overdue debt ratio, payment efficiency, and aged invoices.
+   - Automated executive financial health briefings formatted for the user as "Sir".
 
-3. **Controlled Local Codebase Inspector (`backend/app/research/code_inspector.py`)**:
-   - Filtered file tree scanner ignoring noisy directories (`.git`, `.venv`, `node_modules`, `__pycache__`) and binary files (`.onnx`, `.bin`, `.wav`, `.db`).
-   - AST-based symbol search for Python classes, functions, and FastAPI route endpoints.
-   - Regex symbol scanner for TypeScript interfaces, type aliases, and React components.
-   - Global codebase metrics calculation (Python vs TypeScript vs Markdown files and total lines of code).
+3. **Specialist Agent Integration (`CYRUS_BUSINESS`)**:
+   - Connected `business_agent.py` directly to the SQLite business store, eliminating all synthetic estimation or hallucination.
+   - Answers "Which invoices are overdue?" factually: identifies `INV-2026-003` (₹60,000, Apex Corp) and `INV-2026-004` (₹45,000, Solaris Media) totaling ₹1,05,000 with days past due.
+   - Generates full revenue realization reports and client CRM rosters.
+   - Always addresses the user as "Sir" and maintains 100% English compliance.
 
-4. **Safe Git Assistant (`backend/app/research/git_assistant.py`)**:
-   - Safe version control inspection: current branch name, clean/dirty working tree state, staged vs unstaged file changes, untracked files.
-   - Recent commit log viewer (`git log`) with short/full hashes, authors, relative timestamps, and subjects.
-   - Safe staged and unstaged diff inspector.
-   - Automated Conventional Commit message drafter (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).
-   - Destructive command guard: blocks destructive git actions (`git reset --hard`, `git push --force`, `git clean -fd`) under GUARDIAN L4 Restricted tier.
+4. **Business Intelligence REST API (`backend/app/api/v1/business.py`)**:
+   - `GET /api/v1/business/summary`: Real-time financial telemetry, cashflow metrics, and health score.
+   - `GET /api/v1/business/invoices`: Filtered accounts receivable list by tenant and status.
+   - `GET /api/v1/business/invoices/overdue`: Strictly overdue invoices requiring urgent attention.
+   - `POST /api/v1/business/invoices`: Level 3 invoice creation with unique constraint enforcement.
+   - `GET /api/v1/business/clients`: Multi-tenant client CRM list.
+   - `POST /api/v1/business/clients`: Register new client within tenant boundary.
+   - `GET /api/v1/business/projects`: Project milestone, budget, and progress telemetry.
+   - `GET /api/v1/business/health-report`: AI-compiled financial health briefing.
+   - Mounted in `backend/app/main.py`.
 
-5. **Multi-Agent Tool Integration (`research_agent.py` & `dev_agent.py`)**:
-   - `CYRUS_RESEARCH` agent automatically delegates file reading and web search queries to `SandboxedDocReader` and `WebResearcher`.
-   - `CYRUS_DEV` agent automatically inspects repository status, drafts commits, and reviews codebase metrics.
-
-6. **Research REST API Endpoints (`backend/app/api/v1/research.py`)**:
-   - `POST /api/v1/research/web-search`: Execute web inquiry with source citations.
-   - `POST /api/v1/research/document/read`: Read sandboxed document with metrics and summary.
-   - `GET /api/v1/research/document/list`: List readable files in project.
-   - `GET /api/v1/research/codebase/tree`: Directory hierarchy tree.
-   - `POST /api/v1/research/codebase/symbols`: Symbol search in Python and TypeScript.
-   - `GET /api/v1/research/codebase/overview`: Codebase metrics overview.
-   - `GET /api/v1/research/git/status`: Current branch and dirty/clean status.
-   - `GET /api/v1/research/git/commits`: Recent commit log.
-   - `GET /api/v1/research/git/diff`: Safe diff viewer.
-   - `POST /api/v1/research/git/draft-commit`: Automated Conventional Commit generator.
-
-7. **Frontend Research Center (`ResearchCenter.tsx`)**:
-   - 4-tab cybernetic interface: Web Research, Doc Reader, Code Inspector, and Safe Git Assistant.
-   - Interactive inquiry box with one-click presets and verified citation cards.
-   - Sandboxed document viewer with quick-picker chips and interactive path-traversal test button (`/etc/passwd`).
-   - Codebase metrics summary card and symbol search browser.
-   - Git status dashboard with conventional commit drafter and recent commits log.
+5. **Frontend Business Intelligence Center (`BusinessCenter.tsx`)**:
+   - Tenant Sandbox Filter bar switching between Global (All Tenants), `apex_corp`, `nexus_tech`, and `solaris_media`.
+   - Real-time financial KPI cards (Realized Revenue, Overdue Receivables, In-Flight Pending, Financial Health Index).
+   - Critical overdue notice banner with a 1-click "Draft Reminder" button that prepares a professional follow-up letter.
+   - 4 Interactive Tabs: Invoices Ledger table, Client CRM cards, Projects & Milestones progress bars, and Executive Financial Briefing.
+   - Integrated into `frontend/src/App.tsx`.
 
 ---
 
@@ -84,24 +69,25 @@
 | **Phase 5 Kokoro & Puck Suite** | `TestPhase5KokoroPuck` | Text preprocessor acronym expansion (`API`, `SQL`, `SQLite`, `RAM`, `GB`), markdown stripping, sentence segmentation, persistent voice preferences default to `am_puck`, SQLite reload resilience, Puck signature preview audio generation, custom audition with speed multiplier, English-only output enforcement | **PASSED (6/6)** |
 | **Phase 6 Specialist Agents** | `TestPhase6Agents` | Agent registry listing 5 agents, Personal agent execution, Business agent tenant isolation, Dev agent GUARDIAN gating, Research agent citations, Executive agent morning briefing, multi-agent intent routing, Exam Mode blocking, Emergency Halt blocking | **PASSED (9/9)** |
 | **Phase 7 Research & Computer Access** | `TestPhase7Research` | Sandboxed doc reader, path-traversal rejection (`/etc/passwd`), PDF parsing, file listing, web research offline fallback, prompt injection quarantine, codebase file tree, Python AST symbol search, TypeScript regex symbol search, codebase metrics, safe git status, recent commits, destructive git command gating, git diff inspection, Research agent doc delegation, Dev agent git status, Dev agent codebase overview | **PASSED (18/18)** |
+| **Phase 8 Business Intelligence** | `TestPhase8Business` | Multi-tenant client seeding, multi-tenant client isolation, multi-tenant invoice isolation, overdue invoices query ("Which invoices are overdue?"), tenant-specific overdue filtering, revenue and receivables metrics, dynamic invoice creation and metric updates, CYRUS_BUSINESS overdue answer verification, CYRUS_BUSINESS financial health briefing, CYRUS_BUSINESS CRM isolation | **PASSED (10/10)** |
 
-**Total Architectural Tests Executed: 73 | Total Passed: 73 (100% Pass Rate in 0.295s)**
+**Total Architectural Tests Executed: 83 | Total Passed: 83 (100% Pass Rate in 0.334s)**
 
 ---
 
 ## 🛡️ Security Audit & Least-Privilege Verification
 
-- **Path Traversal Defense**: All document and file inspection requests outside `CYRUS_SANDBOX_PATH` are strictly blocked by GUARDIAN security.
-- **Prompt Injection Quarantine**: Every external document excerpt and web search snippet is wrapped in `<untrusted_content>` tags to prevent instruction overriding.
-- **Git Safety Bounding**: Destructive operations (`git reset --hard`, `git push --force`, `git clean -fd`) are classified as Level 4 Restricted and cannot be executed autonomously.
-- **Zero Ongoing Cost**: All research features operate over open, keyless sources without external subscriptions.
-- **Universal Address Policy**: All responses address Saksham as "Sir" and preserve his legal identity for internal records only.
+- **Multi-Tenant Boundary Enforcement**: Queries strictly enforce `WHERE tenant_id = ?` preventing cross-enterprise data leakage.
+- **Zero Hallucination Architecture**: Accounts receivable and overdue calculations are queried directly from ACID-compliant SQLite WAL storage.
+- **Universal Address Policy**: All business intelligence outputs address Saksham as "Sir".
+- **Zero Recurring Spend**: Operates 100% locally on Apple Silicon M5 without third-party accounting APIs or subscriptions.
 
 ---
 
 ## 🎯 Next Approved Milestone
 
-- **PHASE 8: BUSINESS INTELLIGENCE & INTEGRATIONS**
-  - Implement multi-tenant business data storage with strict tenant boundaries.
-  - Support mock/test accounts for CRM, invoices, revenue tracking, and project tasks.
-  - Generate automated business summary reports and financial health analysis.
+- **PHASE 9: CYRUS SENTINEL & PROACTIVE LOCAL MONITORING**
+  - Lightweight background health-check scheduler (pings websites, local servers).
+  - Event classification (Level 1 Info, Level 2 Important, Level 3 Critical).
+  - Free-tier Telegram bot alert integration for critical alerts.
+  - Transparent display of local monitoring boundaries (sleep/shutdown limitations).

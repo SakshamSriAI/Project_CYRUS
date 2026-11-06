@@ -116,6 +116,47 @@ CREATE TABLE IF NOT EXISTS approval_requests (
     resolved_by TEXT
 );
 
+-- 9. Business Clients Table: Multi-tenant CRM portfolios
+CREATE TABLE IF NOT EXISTS business_clients (
+    id TEXT PRIMARY KEY,
+    tenant_id TEXT NOT NULL,
+    client_name TEXT NOT NULL,
+    contact_email TEXT,
+    status TEXT NOT NULL CHECK(status IN ('ACTIVE', 'INACTIVE', 'LEAD')),
+    created_at TEXT NOT NULL,
+    metadata_json TEXT DEFAULT '{}'
+);
+
+-- 10. Business Invoices Table: Accounts receivable and payment tracking
+CREATE TABLE IF NOT EXISTS business_invoices (
+    id TEXT PRIMARY KEY,
+    tenant_id TEXT NOT NULL,
+    client_id TEXT NOT NULL,
+    invoice_number TEXT NOT NULL UNIQUE,
+    amount_inr REAL NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('DRAFT', 'ISSUED', 'PAID', 'OVERDUE', 'CANCELLED')),
+    issue_date TEXT NOT NULL,
+    due_date TEXT NOT NULL,
+    paid_date TEXT,
+    description TEXT,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES business_clients(id) ON DELETE CASCADE
+);
+
+-- 11. Business Projects Table: Deliverables, budget, and milestone progress
+CREATE TABLE IF NOT EXISTS business_projects (
+    id TEXT PRIMARY KEY,
+    tenant_id TEXT NOT NULL,
+    client_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('PLANNING', 'IN_PROGRESS', 'BLOCKED', 'COMPLETED')),
+    budget_inr REAL NOT NULL,
+    progress_percent INTEGER DEFAULT 0,
+    deadline TEXT,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES business_clients(id) ON DELETE CASCADE
+);
+
 -- Indices for rapid query retrieval
 CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, timestamp);
 CREATE INDEX IF NOT EXISTS idx_memory_category ON memory_items(category, tenant_id);
@@ -123,6 +164,9 @@ CREATE INDEX IF NOT EXISTS idx_tasks_status ON agent_tasks(session_id, status);
 CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_logs(timestamp);
 CREATE INDEX IF NOT EXISTS idx_process_status ON process_registry(status, owned_by_cyrus);
 CREATE INDEX IF NOT EXISTS idx_approval_status ON approval_requests(status, expires_at);
+CREATE INDEX IF NOT EXISTS idx_business_clients_tenant ON business_clients(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_business_invoices_tenant_status ON business_invoices(tenant_id, status);
+CREATE INDEX IF NOT EXISTS idx_business_projects_tenant ON business_projects(tenant_id);
 """
 
 
@@ -175,12 +219,12 @@ async def init_db() -> Dict[str, Any]:
     return result
 
 
-async def execute_query(query: str, params: tuple = ()) -> List[Dict[str, Any]]:
+async def execute_query(query: str, params: Optional[tuple] = None) -> List[Dict[str, Any]]:
     """Executes a read query asynchronously and returns a list of dictionaries."""
     def _execute():
         conn = _get_raw_connection()
         try:
-            cur = conn.execute(query, params)
+            cur = conn.execute(query, params if params is not None else ())
             rows = cur.fetchall()
             return [dict(row) for row in rows]
         finally:
@@ -189,13 +233,13 @@ async def execute_query(query: str, params: tuple = ()) -> List[Dict[str, Any]]:
     return await asyncio.to_thread(_execute)
 
 
-async def execute_write(query: str, params: tuple = ()) -> int:
+async def execute_write(query: str, params: Optional[tuple] = None) -> int:
     """Executes a write query within an atomic transaction and returns affected rows."""
     def _execute():
         conn = _get_raw_connection()
         try:
             with conn:
-                cur = conn.execute(query, params)
+                cur = conn.execute(query, params if params is not None else ())
                 return cur.rowcount
         finally:
             conn.close()

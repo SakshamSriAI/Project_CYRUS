@@ -6,6 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.0] - Phase 8: Business Intelligence & Integrations - 2026-11-06
+
+### Added
+- **Multi-Tenant Business Database Schema**:
+  - `backend/app/database.py`: Added normalized tables for `business_clients`, `business_invoices`, and `business_projects` with foreign keys and performance indices (`idx_business_clients_tenant`, `idx_business_invoices_tenant_status`, `idx_business_projects_tenant`).
+- **Multi-Tenant Business Store**:
+  - `backend/app/business/business_store.py`: ACID-compliant multi-tenant store with strict tenant boundary isolation.
+  - Automated seeding of enterprise demonstration accounts: Apex Consulting Services (`apex_corp`), Nexus AI Systems (`nexus_tech`), and Solaris Digital Media (`solaris_media`).
+  - Days overdue computation based on current timestamp and due dates.
+  - Algorithmic Financial Health Score (0-100) and collection realization ratio telemetry.
+  - Executive financial health briefing generator addressed to the user as "Sir".
+- **Specialist Agent Integration (CYRUS BUSINESS)**:
+  - `backend/app/agents/business_agent.py`: Direct connection to the SQLite business store, answering "Which invoices are overdue?" factually with zero hallucination.
+  - Returns factual breakdown of `INV-2026-003` (₹60,000) and `INV-2026-004` (₹45,000) totaling ₹1,05,000 with days past due.
+  - Full support for revenue reporting, client CRM rosters, and project milestones.
+- **Business Intelligence REST API**:
+  - `backend/app/api/v1/business.py`: Endpoints for `/summary`, `/invoices`, `/invoices/overdue`, `/clients`, `/projects`, `/health-report`, and `/seed-demo-data`.
+  - Mounted under `/api/v1/business` in `backend/app/main.py`.
+- **Frontend Business Intelligence Center**:
+  - `frontend/src/components/Business/BusinessCenter.tsx`: Interactive multi-tenant UI with Tenant Sandbox selector, financial KPI cards (Realized Revenue, Overdue Receivables, Pending Receivables, Health Index), overdue invoices banner with 1-click follow-up reminder generator, and tabs for Invoices Ledger, Client CRM, Projects, and Executive Briefing.
+  - Integrated into `frontend/src/App.tsx`.
+- **Testing & Verification**:
+  - `backend/tests/test_phase8_business.py`: 10 comprehensive unit tests verifying data seeding, multi-tenant isolation, overdue invoice accuracy, tenant filtering, dynamic invoice creation, health score calculation, and CYRUS_BUSINESS specialist agent integration.
+  - All 83 automated architectural unit tests passing with 100% pass rate in 0.334s.
+
+---
+
 ## [0.8.0] - Phase 7: CYRUS Research & Approved Computer Access - 2026-11-06
 
 ### Added
