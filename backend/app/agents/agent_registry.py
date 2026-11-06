@@ -15,6 +15,7 @@ from backend.app.agents.dev_agent import dev_agent
 from backend.app.agents.executive_agent import executive_agent
 from backend.app.agents.personal_agent import personal_agent
 from backend.app.agents.research_agent import research_agent
+from backend.app.agents.sentinel_agent import sentinel_agent
 from backend.app.database import execute_query
 
 logger = logging.getLogger("cyrus.agents.registry")
@@ -28,12 +29,13 @@ class AgentRegistry:
         self._register_default_agents()
 
     def _register_default_agents(self):
-        """Registers the 5 core specialist agents."""
+        """Registers the 6 core specialist agents."""
         self.register(personal_agent)
         self.register(business_agent)
         self.register(dev_agent)
         self.register(research_agent)
         self.register(executive_agent)
+        self.register(sentinel_agent)
 
     def register(self, agent: BaseAgent):
         """Adds a specialist agent to the active registry."""

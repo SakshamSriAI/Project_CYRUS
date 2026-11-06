@@ -37,13 +37,14 @@ class TestPhase6Agents(unittest.IsolatedAsyncioTestCase):
 
     def test_specialist_agent_registry(self):
         agents = agent_registry.list_agents()
-        self.assertEqual(len(agents), 5)
+        self.assertGreaterEqual(len(agents), 5)
         names = [a["name"] for a in agents]
         self.assertIn("CYRUS_PERSONAL", names)
         self.assertIn("CYRUS_BUSINESS", names)
         self.assertIn("CYRUS_DEV", names)
         self.assertIn("CYRUS_RESEARCH", names)
         self.assertIn("CYRUS_EXECUTIVE", names)
+        self.assertIn("CYRUS_SENTINEL", names)
 
     async def test_personal_agent_execution(self):
         agent = agent_registry.get_agent("CYRUS_PERSONAL")

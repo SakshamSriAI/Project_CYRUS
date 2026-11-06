@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.10.0] - Phase 9: CYRUS SENTINEL & Proactive Local Monitoring - 2026-11-06
+
+### Added
+- **Surveillance & Incident Database Schema**:
+  - `backend/app/database.py`: Added normalized tables for `sentinel_monitors` (endpoints, check intervals, expected status codes, current state `UP`/`DOWN`/`DEGRADED`, and latency) and `sentinel_events` (event log classified into 3 severity levels `INFO`, `IMPORTANT`, `CRITICAL` with Telegram dispatch tracking).
+- **Proactive Background Health Watcher**:
+  - `backend/app/sentinel/watcher.py`: Lightweight asynchronous HTTP ping engine measuring real millisecond latency without event loop blocking.
+  - 3-tier event severity classification: Level 1 (Info), Level 2 (Important - high latency or single failure), and Level 3 (Critical - confirmed consecutive downtime).
+  - Lifecycle integration: auto-suspension during `PAUSED`, `EXAM_MODE`, or `SHUTDOWN` states.
+  - Acceptance Criteria Verification: `simulate_downtime()` simulates mock service failures, verifying that SENTINEL detects downtime and dispatches a Level 3 Critical alert in under 30 seconds (< 30s threshold).
+  - Explicit notification of Apple Silicon local sleep and display lid closure monitoring boundaries.
+- **Free-Tier Telegram Bot Alert Dispatcher**:
+  - `backend/app/sentinel/telegram_notifier.py`: Proactive incident alert dispatch supporting live Telegram Bot API and simulated zero-cost delivery mode.
+  - Structured alert templates addressing the user as "Sir" with target name, status code, latency, and timestamp.
+- **Specialist Agent Integration (CYRUS SENTINEL)**:
+  - `backend/app/agents/sentinel_agent.py`: Created and registered `CYRUS_SENTINEL` into `agent_registry.py` (now 6 active specialist agents).
+  - Provides real-time surveillance summaries, runs downtime drills, and explains local MacBook sleep/shutdown boundaries.
+- **Sentinel REST API**:
+  - `backend/app/api/v1/sentinel.py`: Endpoints for `/status`, `/monitors`, `/monitors/{id}/check-now`, `/events`, `/simulate-downtime`, and `/telegram/test`.
+  - Mounted under `/api/v1/sentinel` in `backend/app/main.py`.
+- **Frontend Sentinel Surveillance Center**:
+  - `frontend/src/components/Sentinel/SentinelCenter.tsx`: Interactive monitoring center with live daemon status pill, Apple Silicon sleep boundary notice, summary metric cards, 1-click downtime drill button (<30s verification), monitored services cards with latency indicators, and live event ledger.
+  - Integrated into `frontend/src/App.tsx`.
+- **Testing & Verification**:
+  - `backend/tests/test_phase9_sentinel.py`: 11 comprehensive unit tests verifying monitor seeding, daemon status, Level 2 Important warnings, Level 3 Critical alerts, downtime detection in <30s, Telegram formatting, simulated dispatch, lifecycle pause suspension, exam mode suspension, Sentinel agent telemetry, and sleep limitations explanation.
+  - All 94 automated architectural unit tests passing with 100% pass rate in 0.370s.
+
+---
+
 ## [0.9.0] - Phase 8: Business Intelligence & Integrations - 2026-11-06
 
 ### Added

@@ -157,6 +157,38 @@ CREATE TABLE IF NOT EXISTS business_projects (
     FOREIGN KEY (client_id) REFERENCES business_clients(id) ON DELETE CASCADE
 );
 
+-- 12. Sentinel Monitors Table: Targets for proactive health-checks
+CREATE TABLE IF NOT EXISTS sentinel_monitors (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    target_url TEXT NOT NULL,
+    check_type TEXT NOT NULL CHECK(check_type IN ('HTTP_PING', 'TCP_PORT', 'LOCAL_PROCESS')),
+    interval_seconds INTEGER DEFAULT 30,
+    timeout_seconds REAL DEFAULT 5.0,
+    expected_status_code INTEGER DEFAULT 200,
+    is_active INTEGER DEFAULT 1,
+    current_status TEXT NOT NULL CHECK(current_status IN ('UP', 'DOWN', 'DEGRADED', 'UNKNOWN')),
+    last_checked_at TEXT,
+    last_latency_ms REAL,
+    consecutive_failures INTEGER DEFAULT 0,
+    created_at TEXT NOT NULL
+);
+
+-- 13. Sentinel Events Table: Alert notifications and event history
+CREATE TABLE IF NOT EXISTS sentinel_events (
+    id TEXT PRIMARY KEY,
+    monitor_id TEXT NOT NULL,
+    severity TEXT NOT NULL CHECK(severity IN ('INFO', 'IMPORTANT', 'CRITICAL')),
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    latency_ms REAL,
+    status_code INTEGER,
+    is_resolved INTEGER DEFAULT 0,
+    telegram_dispatched INTEGER DEFAULT 0,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (monitor_id) REFERENCES sentinel_monitors(id) ON DELETE CASCADE
+);
+
 -- Indices for rapid query retrieval
 CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, timestamp);
 CREATE INDEX IF NOT EXISTS idx_memory_category ON memory_items(category, tenant_id);
@@ -167,6 +199,8 @@ CREATE INDEX IF NOT EXISTS idx_approval_status ON approval_requests(status, expi
 CREATE INDEX IF NOT EXISTS idx_business_clients_tenant ON business_clients(tenant_id);
 CREATE INDEX IF NOT EXISTS idx_business_invoices_tenant_status ON business_invoices(tenant_id, status);
 CREATE INDEX IF NOT EXISTS idx_business_projects_tenant ON business_projects(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_sentinel_monitors_active ON sentinel_monitors(is_active, current_status);
+CREATE INDEX IF NOT EXISTS idx_sentinel_events_created ON sentinel_events(created_at, severity);
 """
 
 

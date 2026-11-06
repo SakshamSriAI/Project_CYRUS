@@ -50,6 +50,9 @@ class ProcessManager:
     def current_state(self) -> LifecycleState:
         return self._current_state
 
+    def get_state(self) -> LifecycleState:
+        return self._current_state
+
     def set_state(self, new_state: LifecycleState):
         logger.info("CYRUS Lifecycle state transition: %s -> %s", self._current_state, new_state)
         self._current_state = new_state
