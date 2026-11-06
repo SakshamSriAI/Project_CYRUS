@@ -13,6 +13,7 @@ from backend.app.api.v1.chat import router as chat_router
 from backend.app.api.v1.guardian import router as guardian_router
 from backend.app.api.v1.health import router as health_router
 from backend.app.api.v1.memory import router as memory_router
+from backend.app.api.v1.research import router as research_router
 from backend.app.api.v1.system import router as system_router
 from backend.app.api.v1.voice import router as voice_router
 from backend.app.config import settings
@@ -68,6 +69,7 @@ app.include_router(chat_router, prefix="/api/v1")
 app.include_router(agents_router, prefix="/api/v1")
 app.include_router(guardian_router, prefix="/api/v1")
 app.include_router(memory_router, prefix="/api/v1")
+app.include_router(research_router, prefix="/api/v1")
 app.include_router(voice_router, prefix="/api/v1")
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(system_router, prefix="/api/v1")

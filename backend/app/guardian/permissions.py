@@ -57,7 +57,10 @@ class PermissionEngine:
         target = request.target_resource
 
         # High-Risk / Destructive Operations: Always L4 Restricted
-        destructive_keywords = ["delete", "remove", "drop", "truncate", "kill", "format", "rmdir", "unlink"]
+        destructive_keywords = [
+            "delete", "remove", "drop", "truncate", "kill", "format", "rmdir", "unlink",
+            "reset_hard", "force_push", "clean_fd",
+        ]
         if any(keyword in action for keyword in destructive_keywords):
             return EvaluationResult(
                 is_allowed=False,
@@ -66,8 +69,9 @@ class PermissionEngine:
                 reason="Destructive action detected. Explicit user approval is mandatory.",
             )
 
-        # File Operations
-        if "read" in action or action in ["cat", "ls", "find"]:
+        # File & Codebase Inspection Operations (L1 Read)
+        read_keywords = ["read", "cat", "ls", "find", "inspect", "status", "diff", "log", "symbol", "tree", "doc"]
+        if any(keyword in action for keyword in read_keywords):
             if self.is_path_in_sandbox(target):
                 return EvaluationResult(
                     is_allowed=True,
@@ -83,7 +87,16 @@ class PermissionEngine:
                     reason=f"Path '{target}' is outside the authorized sandbox. Explicit approval required.",
                 )
 
-        if "write" in action or "create" in action or action in ["touch", "mkdir"]:
+        # Web Research & Public Information Gathering (L1 / L2 Read-Only)
+        if action in ["web_search", "web_research", "fetch_url"]:
+            return EvaluationResult(
+                is_allowed=True,
+                requires_human_approval=False,
+                risk_level=PermissionTier.L1_READ,
+                reason="Read-only public web research query permitted.",
+            )
+
+        if "write" in action or "create" in action or action in ["touch", "mkdir", "git_commit", "git_add"]:
             if self.is_path_in_sandbox(target):
                 return EvaluationResult(
                     is_allowed=True,

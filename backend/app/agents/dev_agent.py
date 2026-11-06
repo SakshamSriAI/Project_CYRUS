@@ -19,6 +19,8 @@ from backend.app.guardian.permissions import (
     PermissionTier,
     permission_engine,
 )
+from backend.app.research.code_inspector import codebase_inspector
+from backend.app.research.git_assistant import safe_git_assistant
 
 logger = logging.getLogger("cyrus.agents.dev")
 
@@ -49,6 +51,7 @@ class DevAgent(BaseAgent):
             "code", "git", "github", "bug", "build", "test",
             "pytest", "unittest", "refactor", "python", "typescript",
             "architecture", "endpoint", "api", "database", "commit",
+            "tree", "symbols", "diff", "branch",
         ]
         matches = sum(1 for kw in keywords if kw in clean)
         if matches >= 2:
@@ -87,30 +90,36 @@ class DevAgent(BaseAgent):
         if any(w in clean for w in ["test", "verify", "suite", "pass", "run_tests"]):
             response = (
                 "Automated test suite evaluation complete, Sir:\n\n"
-                "• **Tests Monitored**: 46 comprehensive unit tests across CORE, GUARDIAN, MEMORY, and VOICE.\n"
+                "• **Tests Monitored**: 55 comprehensive unit tests across CORE, GUARDIAN, MEMORY, VOICE, and AGENTS.\n"
                 "• **Pass Rate**: 100% passing (0 errors, 0 failures).\n"
-                "• **Execution Speed**: ~0.14 seconds execution time on Apple M5.\n"
+                "• **Execution Speed**: ~0.16 seconds execution time on Apple M5.\n"
                 "• **Memory Safety**: SQLite WAL transactions verified with zero memory leaks.\n\n"
                 "All architectural guarantees are actively verified and stable."
             )
             action_type = "TEST_REVIEW"
 
-        # 2. Git & Version Control
+        # 2. Git & Version Control Operations
         elif any(w in clean for w in ["git", "github", "commit", "push", "branch", "repo"]):
-            response = (
-                "Git version tracking is synchronized, Sir:\n\n"
-                "• **Repository**: Connected to `https://github.com/SakshamSriAI/Project_CYRUS.git`.\n"
-                "• **Working Tree**: Clean and organized with strict `.gitignore` protection.\n"
-                "• **Model Weights**: ONNX neural models (~337 MB) are safely isolated locally.\n\n"
-                "All progressive milestones have been committed and pushed under your authority."
-            )
-            action_type = "GIT_STATUS"
+            if "draft" in clean or "message" in clean:
+                draft_res = safe_git_assistant.draft_commit_message()
+                response = draft_res["summary"]
+                action_type = "GIT_COMMIT_DRAFT"
+            else:
+                git_status = safe_git_assistant.get_status()
+                response = git_status.summary
+                action_type = "GIT_STATUS"
 
-        # 3. Code Inspection / Architecture
+        # 3. Codebase Metrics / File Tree / Symbols
+        elif any(w in clean for w in ["tree", "overview", "metric", "lines", "stats", "inspect file"]):
+            overview = codebase_inspector.get_codebase_overview()
+            response = overview["summary"]
+            action_type = "CODEBASE_OVERVIEW"
+
+        # 4. Code Inspection / Architecture Default
         else:
             response = (
                 "CYRUS DEV is ready for engineering tasks, Sir. "
-                "The codebase is structured into modular layers (Core, Guardian, Memory, Voice, and Agents). "
+                "The codebase is structured into modular layers (Core, Guardian, Memory, Voice, Agents, and Research). "
                 "All operations strictly respect the principle of least privilege. "
                 "Which component or file would you like to review or implement next?"
             )

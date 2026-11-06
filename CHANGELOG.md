@@ -6,6 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] - Phase 7: CYRUS Research & Approved Computer Access - 2026-11-06
+
+### Added
+- **Sandboxed Document Reader Subsystem**:
+  - `backend/app/research/doc_reader.py`: Secure document reader strictly bounded to `CYRUS_SANDBOX_PATH` with automated path-traversal blocking (`/etc/passwd`, relative directory escaping).
+  - Multi-format support: Markdown (`.md`), plain text (`.txt`), code files (`.py`, `.ts`, `.tsx`, `.json`, `.yml`, `.sh`), and PDF streams.
+  - Resource safety bounding (100,000 characters limit) for Apple Silicon M5 unified memory.
+  - Automatic prompt injection defense wrapping all document excerpts inside `<untrusted_content>` tags.
+  - Executive document summarizer and outline extractor addressing the user as "Sir".
+- **Zero-Cost Web Research Subsystem**:
+  - `backend/app/research/web_researcher.py`: ₹0 recurring cost web research using open, keyless search providers (Wikipedia API, DuckDuckGo Instant Answers, ArXiv).
+  - GUARDIAN permission check and SQLite `audit_logs` tracking for every inquiry.
+  - Offline scientific synthesis fallback for isolated offline operation.
+  - HTML stripping, prompt injection quarantine, and structured citation extraction.
+- **Controlled Local Codebase Inspector**:
+  - `backend/app/research/code_inspector.py`: Filtered file tree scanner ignoring noisy directories (`.git`, `.venv`, `node_modules`, `__pycache__`) and binary weights.
+  - AST-based symbol search for Python classes, functions, and FastAPI routes.
+  - Regex symbol scanner for TypeScript interfaces, type aliases, and React components.
+  - High-level codebase metrics calculation.
+- **Safe Git Assistant**:
+  - `backend/app/research/git_assistant.py`: Safe inspection of repository branch, clean/dirty state, staged vs unstaged file changes, and untracked files.
+  - Recent commit log viewer (`git log`) and safe staged/unstaged diff viewer.
+  - Automated Conventional Commit message drafter (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).
+  - Destructive command guard: flags and blocks destructive git actions (`git reset --hard`, `git push --force`, `git clean -fd`) under GUARDIAN L4 Restricted tier.
+- **Specialist Agent Integration**:
+  - Integrated `SandboxedDocReader` and `WebResearcher` into `CYRUS_RESEARCH` (`research_agent.py`).
+  - Integrated `SafeGitAssistant` and `CodebaseInspector` into `CYRUS_DEV` (`dev_agent.py`).
+- **Research REST API Endpoints**:
+  - `backend/app/api/v1/research.py`: Endpoints for `/web-search`, `/document/read`, `/document/list`, `/codebase/tree`, `/codebase/symbols`, `/codebase/overview`, `/git/status`, `/git/commits`, `/git/diff`, and `/git/draft-commit`.
+  - Mounted under `/api/v1/research` in `backend/app/main.py`.
+- **Frontend Research Center**:
+  - `frontend/src/components/Research/ResearchCenter.tsx`: 4-tab UI (Web Research, Doc Reader, Code Inspector, Safe Git Assistant) with interactive inquiry box, preset chips, verified citation cards, document outline chips, path-traversal drill button, codebase metrics, symbol search, and Git commit drafter.
+  - Integrated into `frontend/src/App.tsx`.
+- **Testing & Verification**:
+  - `backend/tests/test_phase7_research.py`: 18 comprehensive unit tests covering document reading, path-traversal prevention, PDF parsing, web research offline fallback, prompt injection quarantine, codebase file tree, Python AST symbol search, TypeScript symbol search, codebase metrics, safe git status, recent commits, destructive git command gating, git diff inspection, Research agent doc delegation, Dev agent git status, and Dev agent codebase overview.
+  - All 73 automated architectural unit tests passing with 100% pass rate in 0.295s.
+
+---
+
 ## [0.7.0] - Phase 6: CYRUS Specialist Agent Framework - 2026-11-06
 
 ### Added

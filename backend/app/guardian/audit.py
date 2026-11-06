@@ -61,3 +61,21 @@ async def get_audit_logs(limit: int = 50, actor: Optional[str] = None) -> List[D
         except Exception:
             r["details"] = {}
     return rows
+
+
+class AuditLogger:
+    """Convenience wrapper for logging security events."""
+    async def log_event(
+        self,
+        actor: str,
+        action: str,
+        target_resource: str,
+        risk_level: int,
+        outcome: str,
+        details: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        return await log_audit_event(actor, action, target_resource, risk_level, outcome, details)
+
+
+audit_logger = AuditLogger()
+
